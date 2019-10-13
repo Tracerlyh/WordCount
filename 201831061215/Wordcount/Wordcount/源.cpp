@@ -60,7 +60,7 @@ int CFDuplicates(string a, Wordlist W)//²éÕÒÊÇ·ñÓÐÖØ¸´µ¥´ÊÈç¹ûÓÐ·µ»ØÆäËùÔÚÎ»ÖÃ£¬
 				if (a[j] == W.wordlist[i].spelling[j])
 					num++;
 			}
-			if (num == a.length() - 1 &&(a[a.length()-1]>='!'&&a[a.length()-1]<='?') )
+			if ((num ==a.length()-1) &&((a[a.length()-1]>='!'&&a[a.length()-1]<='/') || (a[a.length() - 1] >= ':'&&a[a.length() - 1] <= '@') || (a[a.length() - 1] >= '['&&a[a.length() - 1] <= '`') || (a[a.length() - 1] >= '{'&&a[a.length() - 1] <= '`')))
 			{
 				return i;
 			}
@@ -76,9 +76,9 @@ void Wordlistcopy(Word *a,Word *b,int MAx)//Word½á¹¹Ìå¿½±´
 		a[i].Soo = b[i].Soo;
 	}
 }
-void GetNumCUM(fstream &fp)//·´Ó³ÎÄ¼þÖÐµ¥´Ê³öÏÖµÄÆµÂÊ£¬²¢½«³öÏÖÆµÂÊÇ°10µÄµ¥´ÊÊä³öµ½ÆÁÄ»
+void GetNumCUM(fstream &fp,Wordlist &W,string objectf)//·´Ó³ÎÄ¼þÖÐµ¥´Ê³öÏÖµÄÆµÂÊ£¬²¢½«³öÏÖÆµÂÊÇ°10µÄµ¥´ÊÊä³öµ½ÆÁÄ»
 {
-	Wordlist W;
+	fp.open(objectf, ios::in);
 	string word;
 	int i = 0;
 	W.wordlist = new Word[2000];
@@ -99,8 +99,8 @@ void GetNumCUM(fstream &fp)//·´Ó³ÎÄ¼þÖÐµ¥´Ê³öÏÖµÄÆµÂÊ£¬²¢½«³öÏÖÆµÂÊÇ°10µÄµ¥´ÊÊä³
 			cout << "´æ´¢¿Õ¼äÒÑÂú"<<endl;
 		}
 		fp >> word;
-		if (!fp)
-		break;
+		/*if (!fp)
+		break;*/
 		if (Judgeword(word))//ÅÐ¶ÏÊÇ·ñÊÇÒ»¸öµ¥´Ê
 		{
 			Togglecase(word);
@@ -112,15 +112,24 @@ void GetNumCUM(fstream &fp)//·´Ó³ÎÄ¼þÖÐµ¥´Ê³öÏÖµÄÆµÂÊ£¬²¢½«³öÏÖÆµÂÊÇ°10µÄµ¥´ÊÊä³
 			else
 			{
 				W.wordlist[i].Soo = 0;
-				W.wordlist[i].spelling = word;
-				W.wordlist[i].Soo++;
-				W.NumofWord++;
-				W.SumofWord++;
-				i++;
+				if ((word[word.length() - 1] >= '!'&&word[word.length() - 1] <= '/') || (word[word.length() - 1] >= ':'&&word[word.length() - 1] <= '@') || (word[word.length() - 1] >= '['&&word[word.length() - 1] <= 96) || (word[word.length() - 1] >= 123 && word[word.length() - 1] <= 126))
+				{
+					W.wordlist[i].spelling = word.substr(0, word.length() - 1);
+					W.wordlist[i].Soo++;
+					W.NumofWord++;
+					W.SumofWord++;
+					i++;
+				}
+				else
+				{
+					W.wordlist[i].spelling = word;
+					W.wordlist[i].Soo++;
+					W.NumofWord++;
+					W.SumofWord++;
+					i++;
+				}
 			}
 		}
-		if (fp.eof())
-			break;
 	}
 	int j = 0;
 	int k = 0;
@@ -164,18 +173,37 @@ void GetNumCUM(fstream &fp)//·´Ó³ÎÄ¼þÖÐµ¥´Ê³öÏÖµÄÆµÂÊ£¬²¢½«³öÏÖÆµÂÊÇ°10µÄµ¥´ÊÊä³
 		}
 		i++;
 	}
+	fp.close();
+}
+void CountChar(fstream &fp,string objectf)//Í³¼Æ×Ö·ûÊý
+{
+	fp.open(objectf, ios::in);
+	char ch;
+	double numofchar=0;
+	while(!fp.eof())
+	{
+		fp.get(ch);
+		if ((ch >= 32 && ch <= 126)||ch=='\n')
+			numofchar++;
+		if (!fp)
+			break;
+	}
+	numofchar = (numofchar >= 1) ? numofchar - 1 : numofchar;
+	cout << "×Ö·û×ÜÊý: " << numofchar << endl;
+	fp.close();
 }
 int main()
 {
 	string objectf;//ÓÃÀ´´æ´¢²Ù×÷µÄÎÄ¼þµÄÂ·¾¶
 	string word1;//ÓÃÀ´´æ´¢µÃµ½µÄ×Ö·û´®
+	Wordlist W;
 	double Sumofchar=0;
 	double Sumofword=0;
 	fstream fp1;//Ä¿±êÎÄ¼þÁ÷
 	GetObjectFile(objectf);
-	fp1.open(objectf, ios::in);
-	cout << "ÕýÔÚ¶ÔÎÄ¼þ½øÐÐ´¦Àí"<<endl;
-	GetNumCUM(fp1);
+	cout << "ÕýÔÚ¶ÔÎÄ¼þ½øÐÐ´¦Àí......."<<endl;
+	CountChar(fp1,objectf);//Í³¼Æ×Ö·ûÊý
+	GetNumCUM(fp1,W,objectf);//Í³¼Æµ¥´ÊÊý£¬Í³¼Æ×î¶àµÄ10¸öµ¥´Ê¼°´ÊÆµ
 	fp1.close();
 	system("pause");
 	return 0;
