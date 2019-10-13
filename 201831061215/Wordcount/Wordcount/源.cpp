@@ -133,7 +133,7 @@ void GetNumCUM(fstream &fp,Wordlist &W,string objectf)//反映文件中单词出现的频率
 	}
 	int j = 0;
 	int k = 0;
-	for (i = 0; i < 10; ++i)//将前十排出来
+	for (i = 0; i < W.NumofWord; ++i)//将前十排出来
 	{
 		for (j = 0; j < W.NumofWord; ++j)
 		{
@@ -146,7 +146,7 @@ void GetNumCUM(fstream &fp,Wordlist &W,string objectf)//反映文件中单词出现的频率
 				W.wordlist[j + 1].spelling=word;
 				W.wordlist[j + 1].Soo=k;
 			}
-			if (W.wordlist[j].Soo == W.wordlist[j + 1].Soo&&W.wordlist[j].spelling < W.wordlist[j + 1].spelling)
+			if (W.wordlist[j].Soo == W.wordlist[j + 1].Soo&&W.wordlist[j].spelling > W.wordlist[j + 1].spelling)
 			{
 				word = W.wordlist[j].spelling;
 				k = W.wordlist[j].Soo;
@@ -192,18 +192,30 @@ void CountChar(fstream &fp,string objectf)//统计字符数
 	cout << "字符总数: " << numofchar << endl;
 	fp.close();
 }
+void Findgoalword(Wordlist W,int n)
+{
+	int sum=0;
+	for (int i = 0; i < W.NumofWord; ++i)
+	{
+		if (W.wordlist[i].spelling.length() == n)
+			sum++;
+	}
+	cout << n << "个字符长度的单词数量： " << sum << endl;
+}
 int main()
 {
 	string objectf;//用来存储操作的文件的路径
 	string word1;//用来存储得到的字符串
 	Wordlist W;
-	double Sumofchar=0;
-	double Sumofword=0;
+	int longofgoalword;
 	fstream fp1;//目标文件流
 	GetObjectFile(objectf);
 	cout << "正在对文件进行处理......."<<endl;
 	CountChar(fp1,objectf);//统计字符数
 	GetNumCUM(fp1,W,objectf);//统计单词数，统计最多的10个单词及词频
+	cout << "(扩展功能)请输入需要统计的单词长度:";
+	cin >> longofgoalword;
+	Findgoalword(W,longofgoalword );//统计指定字符长度的单词
 	fp1.close();
 	system("pause");
 	return 0;
