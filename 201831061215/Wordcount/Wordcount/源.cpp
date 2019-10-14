@@ -76,6 +76,25 @@ void Wordlistcopy(Word *a,Word *b,int MAx)//Word结构体拷贝
 		a[i].Soo = b[i].Soo;
 	}
 }
+void AdditionalMemory(Wordlist &W)//内存追加
+{
+	Word *a;
+	a = new Word[W.Max + 500];
+	for (int i = 0; i < W.Max; ++i)
+	{
+			a[i].Soo = W.wordlist[i].Soo;
+			a[i].spelling = W.wordlist[i].spelling;
+	}
+	delete[] W.wordlist;
+	W.wordlist = new Word[W.Max + 500];
+	for (int i = 0; i < W.Max + 500; ++i)
+	{
+		W.wordlist[i].Soo = a[i].Soo;
+		W.wordlist[i].spelling = a[i].spelling;
+	}
+	delete[] a;
+	W.Max += 500;
+}
 void GetNumCUM(fstream &fp,Wordlist &W,string objectf)//反映文件中单词出现的频率，并将出现频率前10的单词输出到屏幕
 {
 	fp.open(objectf, ios::in);
@@ -89,14 +108,7 @@ void GetNumCUM(fstream &fp,Wordlist &W,string objectf)//反映文件中单词出现的频率
 	{
 		if (W.NumofWord >= W.Max)//内存空间已满0
 		{
-			/*Word *tf=new Word[Maxsize+20];
-			Wordlistcopy(tf,W.wordlist,Maxsize);
-			W.wordlist = NULL;
-			W.wordlist = new Word[Maxsize + 20];
-			Wordlistcopy(W.wordlist,tf,Maxsize);
-			tf = NULL;
-			W.Max += 20;*/
-			cout << "存储空间已满"<<endl;
+			AdditionalMemory(W);
 		}
 		fp >> word;
 		/*if (!fp)
