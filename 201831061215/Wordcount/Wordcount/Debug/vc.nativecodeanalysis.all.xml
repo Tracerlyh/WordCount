@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DEFECTS><DEFECT>
+    <SFA>
+      <FILEPATH>e:\wordcount\wordcount\201831061215\wordcount\wordcount</FILEPATH>
+      <FILENAME>内存追加测试.cpp</FILENAME>
+      <LINE>11</LINE>
+      <COLUMN>0</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'Word::Soo' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>Word::{ctor}</FUNCTION>
+    <DECORATED>??0Word@@QAE@XZ</DECORATED>
+    <FUNCLINE>11</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT></DEFECTS>

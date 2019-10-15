@@ -2,6 +2,7 @@
 #include<iostream>
 #include<fstream>
 #include<string>
+#include<math.h>
 const int Maxsize=100;
 using namespace std;
 typedef struct
@@ -106,13 +107,13 @@ void GetNumCUM(fstream &fp,Wordlist &W,string objectf)//反映文件中单词出现的频率
 	W.Max = 100;
 	while (!fp.eof())
 	{
+		
 		if (W.NumofWord >= W.Max)//内存空间已满0
 		{
 			AdditionalMemory(W);
 		}
 		fp >> word;
-		/*if (!fp)
-		break;*/
+        if (!fp)  break;
 		if (Judgeword(word))//判断是否是一个单词
 		{
 			Togglecase(word);
@@ -192,43 +193,87 @@ void CountChar(fstream &fp,string objectf)//统计字符数
 	fp.open(objectf, ios::in);
 	char ch;
 	double numofchar=0;
+	double numofline=0;
 	while(!fp.eof())
 	{
 		fp.get(ch);
 		if ((ch >= 32 && ch <= 126)||ch=='\n')
 			numofchar++;
+		if (ch == '\n') numofline++;
 		if (!fp)
 			break;
 	}
 	numofchar = (numofchar >= 1) ? numofchar - 1 : numofchar;
+	if (numofchar >= 1 && numofline == 0) numofline++;
+
 	cout << "字符总数: " << numofchar << endl;
+	cout << "行数:" << numofline << endl;
 	fp.close();
 }
-void Findgoalword(Wordlist W,int n)
+void Findgoalword(Wordlist W,int n)//统计指定长度的单词的数量
 {
-	int sum=0;
+	int num=0;
+	int sum = 0;
 	for (int i = 0; i < W.NumofWord; ++i)
 	{
 		if (W.wordlist[i].spelling.length() == n)
-			sum++;
+		{
+			num++;
+			sum = sum + W.wordlist[i].Soo;
+		}
 	}
-	cout << n << "个字符长度的单词数量： " << sum << endl;
+	cout << n << "个字符长度的单词数量(不计重复单词)： " << num << endl;
+	cout<<n<< "个字符长度的单词数量(计重复单词)： " << sum << endl;
 }
 int main()
 {
 	string objectf;//用来存储操作的文件的路径
 	string word1;//用来存储得到的字符串
-	Wordlist W;
-	int longofgoalword;
+	Wordlist W;//单词表
+	string longofgoalword1;//用来存储用户输入的字符串，并用来判断用户输入的是否是正整数，如果是将其转成int
+	int longofgoalword=0;//用来储存用户输入的字符串转换成的整数
+	int flag = 1;//交互的判断
 	fstream fp1;//目标文件流
-	GetObjectFile(objectf);
+	part1:
+	GetObjectFile(objectf);//提示用户输入文件路径及名字并将用户输入的文件路径存储到string类型的参数里
+	fp1.open(objectf, ios::in);
+	if (!fp1)
+	{
+		cout << "抱歉，未检测到该文件！请检查输入是否正确。    " << endl;;
+		cout << "退出请输入2,"<<endl<<"重新输入文件名请输入任意数字。"<<endl;
+		cout << "请输入你的命令:";
+		cin >> flag;
+		if (flag == 2)return 0;
+		else goto part1;
+	}
 	cout << "正在对文件进行处理......."<<endl;
+	fp1.close();
 	CountChar(fp1,objectf);//统计字符数
 	GetNumCUM(fp1,W,objectf);//统计单词数，统计最多的10个单词及词频
+	part2:
 	cout << "(扩展功能)请输入需要统计的单词长度:";
-	cin >> longofgoalword;
+	cin >> longofgoalword1;
+	int j = 0;
+	for (unsigned int i = 0; i < longofgoalword1.length(); ++i)
+	{
+		if (48 <= longofgoalword1[i] && longofgoalword1[i] <= 57)
+		{
+			j++;
+		}
+	}
+	flag == 0;
+	if (j != longofgoalword1.length())
+	{
+		cout << "  检测到非法输入!!!" << endl << "重新输入请输入1" << endl << "退出请输入任意值";
+		cin >> flag;
+		if (flag == 1) goto part2;
+		else return 0;
+	}
+	for (int i = longofgoalword1.length()-1; i >=0;i--)
+	{
+		longofgoalword += ((int)(longofgoalword1[i] - 48))*pow(10, i);
+	}
 	Findgoalword(W,longofgoalword );//统计指定字符长度的单词
-	fp1.close();
 	system("pause");
 	return 0;
 }

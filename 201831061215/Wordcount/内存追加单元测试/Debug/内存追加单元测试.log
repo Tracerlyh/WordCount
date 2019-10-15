@@ -1,0 +1,6 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: 中间目录(Debug\)包含从另一个项目(内存追加单元测试.vcxproj)共享的文件。   这会导致错误的清除和重新生成行为。
+  stdafx.cpp
+  unittest1.cpp
+    正在创建库 E:\wordcount\WordCount\201831061215\Wordcount\Debug\测试.lib 和对象 E:\wordcount\WordCount\201831061215\Wordcount\Debug\测试.exp
+LINK : warning LNK4232: 名称 测试.dll 包含非 ASCII 字符，在具有除 936 以外的 ANSI 代码页的系统上可能不能加载 DLL
+  内存追加单元测试.vcxproj -> E:\wordcount\WordCount\201831061215\Wordcount\Debug\测试.dll
